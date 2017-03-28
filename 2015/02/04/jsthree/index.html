@@ -1,0 +1,541 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Javascript高级程序设计-笔记 | Hey&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="hey">
+    
+    <meta name="description" content="###页码：64
+ECMAScript函数不介意传递进来几个参数，也不在乎参数的数据类型。原因是参数在内部是用一个数组来表示的，在函数体内通过arguments对象来访问这个参数数组，从而获取传递给函数的每一个参数，其实，argument对象只是与数组类似（它并不是Array的实例）
+命名的参数只提">
+    
+    
+    
+    
+    
+    <link rel="icon" type="image/x-icon" href="bitbug_favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3Fc92b6a32e6b86869e6938a97785d8e71' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="Hey&#39;s blog" title="Hey&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Hey&#39;s blog">Hey&#39;s blog</a></h1>
+				<h2 class="blog-motto">半明半暗的云</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">存档</a></li>
+					
+						<li><a href="/about">关于</a></li>
+					
+						<li><a href="/demolist">Demo</a></li>
+					
+					<li>
+					
+					<form class="search" action="//baidu.com/s" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="wd" autocomplete="off" maxlength="20" placeholder="搜索" />
+                        <input name=tn type=hidden value="bds">
+                        <input name=cl type=hidden value="3">
+                        <input name=ct type=hidden value="2097152">
+						<input type="hidden" name="si" value="yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/02/04/jsthree/" title="Javascript高级程序设计-笔记" itemprop="url">Javascript高级程序设计-笔记</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://yoursite.com" title="hey">hey</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2015-02-04T07:49:56.000Z" itemprop="datePublished">2015-02-04</time>
+    更新日期:<time datetime="2015-02-05T08:07:21.952Z" itemprop="dateModified">2015-02-05</time>
+    
+  </p>
+</header>
+
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+		</div>
+		
+		<p>###页码：64</p>
+<p>ECMAScript函数不介意传递进来几个参数，也不在乎参数的数据类型。原因是参数在内部是用一个数组来表示的，在函数体内通过arguments对象来访问这个参数数组，从而获取传递给函数的每一个参数，<strong>其实，argument对象只是与数组类似（它并不是Array的实例）</strong></p>
+<p>命名的参数只提供便利，但不是必须的</p>
+<pre><code>function sayHi()
+{
+    alert(&apos;Hello&apos;+arguments[0]+arguments[1]);
+}
+
+function howmanyargs()
+{
+    alert(arguments.length);
+}
+
+howmanyargs(&quot;string&quot;,45);//2
+howmanyargs();//0
+howmanyargs(12);//1
+</code></pre><p><strong>Tips:没有重载</strong><br>ECMAScrit没有函数签名（接收的参数的类型和数量），因为其参数是由包含零或多个值得数组来表示的。<br>所以如果定义了两个名字相同的函数，则该名字只属于后定义的函数</p>
+<p>###页码：71</p>
+<pre><code>&lt;script type=&quot;text/javascript&quot;&gt;
+function setName(obj){
+    obj.name=&quot;Nicolas&quot;;
+}
+
+var person=new Object();
+setName(person);
+alert(person.name);//&quot;Nicolas&quot;
+&lt;/script&gt;
+</code></pre><p>在这个函数内部obj和person引用的是同一个对象。换句话说，即使这个变量是按值传递的，obj也会按引用来访问同一个对象<br><strong>于是有很多开发人员错误的认为：在局部修改对象会在全局作用域中反映出来</strong><br>为了纠正上面观点我们看一个例子：</p>
+<pre><code>&lt;script type=&quot;text/javascript&quot;&gt;
+function setName(obj){
+    obj.name=&quot;Nicolas&quot;;
+    obj=new Object();
+    obj.name=&quot;Greg&quot;;
+}
+
+var person=new Object();
+setName(person);
+alert(person.name);//&quot;Nicolas&quot;
+&lt;/script&gt;
+</code></pre><p>如果person按引用传递，那么结果应该是“Greg”，这说明即使在函数内部修改了参数的值，但原始的引用仍然保持不变。</p>
+<p>###页码72</p>
+<pre><code>var n=null;
+var u;
+alert(typeof n);//Object
+alert(typeof u);//undefined
+</code></pre><p>###页码75</p>
+<p>延长作用域链</p>
+<ul>
+<li>try-catch语句的catch块</li>
+<li><p>with语句<br>with语句举例如下：</p>
+<p>  function buildUrl(){</p>
+<pre><code>var qs=&quot;?debug=true&quot;;
+with(location){
+    var url=href+qs;
+}
+return url;
+</code></pre><p>  }</p>
+</li>
+</ul>
+<p>###页码78</p>
+<ul>
+<li>标记清除mark-and-sweep</li>
+<li>引用计数reference counting 存在循环引用的问题 注意数据不用时，解除引用（dereference）</li>
+</ul>
+<p>IE以前的垃圾收集器是根据内存分配量来运行的，如果脚本在生命周期中一直保有很多的变量，那么垃圾收集器就不得不频繁的运行。<br>由此引发的严重性能问题促使IE7重写了垃圾收集历程</p>
+<p>###页码89</p>
+<pre><code>var person1={
+    toLocaleString:function(){
+        return &quot;Nicolaos&quot;;
+    },
+
+    toString:function(){
+        return &quot;Nicolas&quot;
+    }
+};
+
+var person2={
+    toLocaleString:function(){
+        return &quot;Grigorios&quot;;
+    },
+
+    toString:function(){
+        return &quot;Greg&quot;
+    }
+};
+
+var people=[person1,person2];
+alert(people);//Nicholas,Greg
+alert(people.toString());//Nicholas,Greg
+alert(people.toLocaleString());//Nikolaos,Grigorios
+</code></pre><p>alert中参数为people时会对数组中的每一项用到toString()方法，也就是两个对象的toString()方法</p>
+<p>###页码97</p>
+<p>Array类型常用的迭代和合并方法，举例如下：</p>
+<pre><code>var numbers=[1,2,3,4,5,4,3,2,1];
+
+var filterResult=numbers.filter(function(item,index,array){
+    return(item&gt;2);
+});
+
+var mapResult=numbers.map(function(item,index,array){
+    return item*2;
+});
+
+var sum=numbers.reduce(function(prev,cur,index,array){
+    return prev+cur;
+});
+
+alert(filterResult);//[3,4,5,4,3]
+
+alert(mapResult);//[2,4,6,8,10,8,6,4,2]
+
+alert(sum);//25
+</code></pre><p>###页码100</p>
+<p>通用的获取时间的js代码：</p>
+<pre><code>var start=+new Date();
+
+dosomething();
+
+var stop=+new Date();
+
+var result=stop-start;
+</code></pre><p>###页码112</p>
+<pre><code>alert(sum(10,10));
+var sum=function(num1,num2){
+    return num1+num2;    
+};
+</code></pre><p>上面的函数位于一个初始化语句中，而不是一个函数声明，这里函数声明（function declaration hoisting）提升失效。</p>
+<p>要访问函数的指针而不执行函数的话，必须去掉函数名后面的那对圆括号。</p>
+<pre><code>function callsomefunction(somefunction,someargument){
+    return somefunction(someargument);
+}
+
+function add10(num)
+{
+    return num+10;
+}
+
+var result=callsomefunction(add10,10);
+alert(result);
+</code></pre><p><strong>tips:留意113页利用sort和自定义函数结合的方法</strong></p>
+<p>###页码114</p>
+<pre><code>function factorial(num){
+    if(num&lt;=1){
+        return 1;
+    }
+    else{
+        return num*arguments.callee(num-1);
+    }
+}
+
+var truefactorial=factorial;
+
+factorial=function(){
+    return 0;
+}
+
+alert(truefactorial(5));//120
+alert(factorial(5));//0
+</code></pre><p>利用arguments.callee来降低函数的执行与函数名之间的紧耦合，无论函数名字怎么改变都能正常调用。</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/javascript/">javascript</a>
+  </div>
+
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://yoursite.com/2015/02/04/jsthree/" data-title="Javascript高级程序设计-笔记 | Hey&#39;s blog" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2015/02/06/improvethree/" title="图片优化">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  图片优化</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2015/02/03/improvetwo/"  title="页面性能与优化">
+ <strong>NEXT:</strong><br/> 
+ <span>页面性能与优化
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<!-- 多说评论框 start -->
+		<div class="ds-thread"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+		var duoshuoQuery = {short_name:"theonewang"};
+		(function() {
+			var ds = document.createElement('script');
+			ds.type = 'text/javascript';ds.async = true;
+			ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+			ds.charset = 'UTF-8';
+			(document.getElementsByTagName('head')[0] 
+			 || document.getElementsByTagName('body')[0]).appendChild(ds);
+		})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/Python/" title="Python">Python<sup>1</sup></a></li>
+		
+			<li><a href="/tags/css/" title="css">css<sup>3</sup></a></li>
+		
+			<li><a href="/tags/hexo/" title="hexo">hexo<sup>1</sup></a></li>
+		
+			<li><a href="/tags/html/" title="html">html<sup>1</sup></a></li>
+		
+			<li><a href="/tags/javascript/" title="javascript">javascript<sup>4</sup></a></li>
+		
+			<li><a href="/tags/php/" title="php">php<sup>1</sup></a></li>
+		
+			<li><a href="/tags/性能优化/" title="性能优化">性能优化<sup>3</sup></a></li>
+		
+			<li><a href="/tags/软件工程/" title="软件工程">软件工程<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wizicer/iceman" target="_blank" title="Iceman">Iceman</a> © 2017 
+		
+		<a href="http://yoursite.com" target="_blank" title="hey">hey</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"theonewang"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+
+
+
+  </body>
+</html>
+
